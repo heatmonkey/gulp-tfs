@@ -47,7 +47,6 @@ gulp.task('preflight', function(){
 });
 
 //Options are Edit and Lock, Edit is default
-```js
 
 gulp.task('preflight', function(){
   gulp.src('./package.json')
