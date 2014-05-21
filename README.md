@@ -52,7 +52,7 @@ gulp.task('preflight', function(){
 
 gulp.task('preflight', function(){
   gulp.src('./package.json')
-  .pipe(gulpTfs({command: ;lock'}))
+  .pipe(gulpTfs({command: 'lock'}))
   .pipe(gulp.dest('./'));
 });
 
