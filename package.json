@@ -1,0 +1,36 @@
+{
+  "name": "gulp-tfs",
+  "description": "TFS check-out and edit plugin for gulp",
+  "version": "0.0.1",
+  "homepage": "https://github.com/heatmonkey/gulp-tfs",
+  "repository": "git://github.com/heatmonkey/gulp-tfs.git",
+  "author": "James O'Donnell (https://github.com/heatmonkey/)",
+  "main": "./index.js",
+  "keywords": [
+    "gulpplugin",
+    "TFS"
+  ],
+  "dependencies": {
+    "gulp-util": "^2.2.14",
+    "through2": "^0.4.1"
+  },
+  "devDependencies": {
+    "chai": "^1.0.0",
+    "jshint": "^2.5.1",
+    "mocha": "^1.18.2",
+    "tmp": "0.0.23",
+    "vinyl": "^0.2.3"
+  },
+  "scripts": {
+    "test": "mocha && jshint ./*.js && jshint ./test/*.js"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://github.com/heatmonkey/gulp-tfs/raw/master/LICENSE"
+    }
+  ]
+}
