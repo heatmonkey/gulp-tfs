@@ -4,29 +4,30 @@ var PluginError = gutil.PluginError;
 var fs = require('fs');
 var exec = require('child_process').exec;
 
-const PLUGIN_NAME = 'gulp-tfs';
+var PLUGIN_NAME = 'gulp-tfs';
 
 var gulpTfs = function (opts) {
 	opts = setDefaultOptions(opts);
 	return through.obj(function (file, enc, done) {
+		checkForTFS(function (result) {
+			if (result) {
+				if (!fs.existsSync(file.path)) {
+					throw new PluginError(PLUGIN_NAME, "File does not exist");
+				}
 
-		if (checkForTFS()) {
-			if (!fs.existsSync(file.path)) {
-				throw new PluginError(PLUGIN_NAME, "File does not exist");
+				if (process.platform !== 'win32') {
+					throw new PluginError(PLUGIN_NAME, "This plugin can only be used on a Windows system with Visual Studio installed");
+				}
+
+				var command = 'tf ' + opts.command + " " + file.path;
+
+				var proc = exec(command, execCallback);
+				proc.on('end', function (data) {
+					done(data);
+				});
 			}
-
-			if (process.platform !== 'win32') {
-				throw new PluginError(PLUGIN_NAME, "This plugin can only be used on a Windows system with Visual Studio installed");
-			}
-
-			var command = 'tf ' + opts.command + " " + file.path;
-
-			var proc = exec(command, execCallback);
-			proc.on('end', function (data) {
-				done(data);
-			});
-		}
-	})
+		});
+	});
 };
 
 var setDefaultOptions = function (opts) {
