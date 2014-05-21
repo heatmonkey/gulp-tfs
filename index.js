@@ -8,8 +8,8 @@ var PLUGIN_NAME = 'gulp-tfs';
 
 var gulpTfs = function (opts) {
 	opts = setDefaultOptions(opts);
-	return through.obj(function (file, enc, done) {
-
+	return through.obj(function (file, enc, cb) {
+		var that = this;
 		checkForTFS(function (result) {
 
 			if (result) {
@@ -26,14 +26,14 @@ var gulpTfs = function (opts) {
 				var proc = exec(command, execCallback);
 				proc.on('end', function (data) {
 					gutil.log('TFS Command: ' + gutil.colors.magenta(opts.command) + ' done on: ' + gutil.colors.cyan(data));
+					that.push(file);
+					cb();
 				});
 			}
 			else {
 				gutil.log('TF command is not found.');
 			}
 		});
-		this.push(file);
-		return done();
 	});
 };
 
