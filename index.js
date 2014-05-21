@@ -1,5 +1,6 @@
 var through = require('through2');
 var gutil = require('gulp-util');
+var PluginError = gutil.PluginError;
 var fs = require('fs');
 var exec = require('child_process').exec;
 
@@ -8,24 +9,31 @@ var PLUGIN_NAME = 'gulp-tfs';
 var gulpTfs = function (opts) {
 	opts = setDefaultOptions(opts);
 	return through.obj(function (file, enc, done) {
+
 		checkForTFS(function (result) {
+
 			if (result) {
 				if (!fs.existsSync(file.path)) {
-					this.emit('error', new gutil.PluginError(PLUGIN_NAME, "File does not exist"));
+					throw new PluginError(PLUGIN_NAME, "File does not exist");
 				}
 
 				if (process.platform !== 'win32') {
-					this.emit('error', new gutil.PluginError(PLUGIN_NAME, "This plugin can only be used on a Windows system with Visual Studio installed"));
+					throw new PluginError(PLUGIN_NAME, "This plugin can only be used on a Windows system with Visual Studio installed");
 				}
 
 				var command = 'tf ' + opts.command + " " + file.path;
 
 				var proc = exec(command, execCallback);
 				proc.on('end', function (data) {
-					done(data);
+					gutil.log('TFS Command: ' + gutil.colors.magenta(opts.command) + ' done on: ' + gutil.colors.cyan(data));
 				});
 			}
+			else {
+				gutil.log('TF command is not found. Is it installed and in your path?');
+			}
 		});
+		this.push(file);
+		return done();
 	});
 };
 
@@ -34,7 +42,7 @@ var setDefaultOptions = function (opts) {
 	opts = opts || {};
 	opts.command = opts.command || 'edit';
 	if (validCommands.indexOf(opts.command) < 0) {
-		this.emit('error', new gutil.PluginError(PLUGIN_NAME, "The only commands currently implemented are 'edit' and 'lock'"));
+		throw new PluginError(PLUGIN_NAME, "The only commands currently implemented are 'edit' and 'lock'");
 	}
 	return opts;
 };
@@ -43,16 +51,15 @@ var execCallback = function (err, stdout, stderr) {
 	var returnVal;
 	if (stderr) {
 		returnVal = stderr;
-		this.emit('error', new gutil.PluginError(PLUGIN_NAME, returnVal));
+		throw new PluginError(PLUGIN_NAME, returnVal);
 	}
 	if (err) {
 		returnVal = err;
-		this.emit('error', new gutil.PluginError(PLUGIN_NAME, returnVal));
+		throw new PluginError(PLUGIN_NAME, returnVal);
 	}
 	else {
 		returnVal = stdout;
 	}
-	gutil.log('File Status: ', gutil.colors.cyan(returnVal));
 	return returnVal;
 };
 
@@ -65,7 +72,7 @@ var checkForTFS = function (done) {
 			done(true);
 		}
 		else {
-			this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'TF command is not available. Make sure Visual Studio is installed and its install directory is in your %PATH%'));
+			throw new PluginError(PLUGIN_NAME, 'TF command is not available. Make sure Visual Studio is installed and its install directory is in your %PATH%');
 		}
 	});
 };
