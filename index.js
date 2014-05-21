@@ -1,6 +1,5 @@
 var through = require('through2');
 var gutil = require('gulp-util');
-var PluginError = gutil.PluginError;
 var fs = require('fs');
 var exec = require('child_process').exec;
 
@@ -12,11 +11,11 @@ var gulpTfs = function (opts) {
 		checkForTFS(function (result) {
 			if (result) {
 				if (!fs.existsSync(file.path)) {
-					throw new PluginError(PLUGIN_NAME, "File does not exist");
+					this.emit('error', new gutil.PluginError(PLUGIN_NAME, "File does not exist"));
 				}
 
 				if (process.platform !== 'win32') {
-					throw new PluginError(PLUGIN_NAME, "This plugin can only be used on a Windows system with Visual Studio installed");
+					this.emit('error', new gutil.PluginError(PLUGIN_NAME, "This plugin can only be used on a Windows system with Visual Studio installed"));
 				}
 
 				var command = 'tf ' + opts.command + " " + file.path;
@@ -35,7 +34,7 @@ var setDefaultOptions = function (opts) {
 	opts = opts || {};
 	opts.command = opts.command || 'edit';
 	if (validCommands.indexOf(opts.command) < 0) {
-		throw new PluginError(PLUGIN_NAME, "The only commands currently implemented are 'edit' and 'lock'");
+		this.emit('error', new gutil.PluginError(PLUGIN_NAME, "The only commands currently implemented are 'edit' and 'lock'"));
 	}
 	return opts;
 };
@@ -44,15 +43,16 @@ var execCallback = function (err, stdout, stderr) {
 	var returnVal;
 	if (stderr) {
 		returnVal = stderr;
-		throw new PluginError(PLUGIN_NAME, returnVal);
+		this.emit('error', new gutil.PluginError(PLUGIN_NAME, returnVal));
 	}
 	if (err) {
 		returnVal = err;
-		throw new PluginError(PLUGIN_NAME, returnVal);
+		this.emit('error', new gutil.PluginError(PLUGIN_NAME, returnVal));
 	}
 	else {
 		returnVal = stdout;
 	}
+	gutil.log('File Status: ', gutil.colors.cyan(returnVal));
 	return returnVal;
 };
 
@@ -65,7 +65,7 @@ var checkForTFS = function (done) {
 			done(true);
 		}
 		else {
-			throw new PluginError(PLUGIN_NAME, 'TF command is not available. Make sure Visual Studio is installed and its install directory is in your %PATH%');
+			this.emit('error', new gutil.PluginError(PLUGIN_NAME, 'TF command is not available. Make sure Visual Studio is installed and its install directory is in your %PATH%'));
 		}
 	});
 };
