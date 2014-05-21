@@ -22,9 +22,13 @@ var gulpTfs = function (opts) {
 				}
 
 				var command = 'tf ' + opts.command + " " + file.path;
-				exec(command, execCallback);
-				that.push(file);
-				cb();
+				exec(command, function (err, stdout, stderr) {
+					"use strict";
+					processExecResults(err, stdout, stderr);
+					gutil.log('TF result: command ' + opts.command + " on file " + gutil.colors.cyan(returnVal));
+					that.push(file);
+					cb();
+				});
 			}
 			else {
 				gutil.log('TF command is not found.');
@@ -45,7 +49,7 @@ var setDefaultOptions = function (opts) {
 	return opts;
 };
 
-var execCallback = function (err, stdout, stderr) {
+var processExecResults = function (err, stdout, stderr) {
 	var returnVal;
 	if (stderr) {
 		returnVal = stderr;
@@ -58,10 +62,8 @@ var execCallback = function (err, stdout, stderr) {
 	else {
 		returnVal = stdout;
 	}
-	gutil.log('TF result: ' + gutil.colors.cyan(returnVal));
 	return returnVal;
 };
-
 
 var checkForTFS = function (done) {
 	exec('tf bob', function (err, stdout, stderr) {
@@ -78,6 +80,6 @@ var checkForTFS = function (done) {
 
 module.exports = gulpTfs;
 module.exports.checkForTFS = checkForTFS;
-module.exports.execCallback = execCallback;
+module.exports.processExecResults = processExecResults;
 module.exports.setDefaultOptions = setDefaultOptions;
 

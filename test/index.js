@@ -34,18 +34,18 @@ describe('gulp-tfs', function () {
 	describe('Exec callback must respond to err, stdout and stderr', function () {
 		it('Should throw an exception on a stderr', function () {
 			expect(function () {
-				gulpTfs.execCallback(null, null, "STDError: Message");
+				gulpTfs.processExecResults(null, null, "STDError: Message");
 			})
 				.to.throw("STDError: Message");
 		});
 		it('Should throw an exception on a err', function () {
 			expect(function () {
-				gulpTfs.execCallback("Error: Message", null, null);
+				gulpTfs.processExecResults("Error: Message", null, null);
 			})
 				.to.throw("Error: Message");
 		});
 		it('Should return data for stdout', function () {
-			assert.equal(gulpTfs.execCallback(null, "STDOut: Message", null),"STDOut: Message");
+			expect(gulpTfs.processExecResults(null, "STDOut: Message", null)).to.equal("STDOut: Message");
 		});
 	});
 });
