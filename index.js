@@ -57,6 +57,7 @@ var processExecResults = function (err, stdout, stderr) {
 	}
 	if (err) {
 		returnVal = err;
+		gutil.log('TF command caution: ' + opts.command + " on file " + gutil.colors.cyan(stdout) + " -- " + gutil.colors.yello(returnVal));
 		throw new PluginError(PLUGIN_NAME, returnVal);
 	}
 	else {
