@@ -25,7 +25,7 @@ var gulpTfs = function (opts) {
 				exec(command, function (err, stdout, stderr) {
 					"use strict";
 					processExecResults(err, stdout, stderr);
-					gutil.log('TF result: command ' + opts.command + " on file " + gutil.colors.cyan(returnVal));
+					gutil.log('TF result: command ' + opts.command + " on file " + gutil.colors.cyan(stdout));
 					that.push(file);
 					cb();
 				});
