@@ -22,16 +22,14 @@ var gulpTfs = function (opts) {
 				}
 
 				var command = 'tf ' + opts.command + " " + file.path;
-
-				var proc = exec(command, execCallback);
-				proc.on('end', function (data) {
-					gutil.log('TFS Command: ' + gutil.colors.magenta(opts.command) + ' done on: ' + gutil.colors.cyan(data));
-					that.push(file);
-					cb();
-				});
+				exec(command, execCallback);
+				that.push(file);
+				cb();
 			}
 			else {
 				gutil.log('TF command is not found.');
+				that.push(file);
+				cb();
 			}
 		});
 	});
@@ -60,6 +58,7 @@ var execCallback = function (err, stdout, stderr) {
 	else {
 		returnVal = stdout;
 	}
+	gutil.log('TF result: ' + gutil.colors.cyan(returnVal));
 	return returnVal;
 };
 
