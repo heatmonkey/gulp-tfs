@@ -29,7 +29,7 @@ var gulpTfs = function (opts) {
 				});
 			}
 			else {
-				gutil.log('TF command is not found. Is it installed and in your path?');
+				gutil.log('TF command is not found.');
 			}
 		});
 		this.push(file);
