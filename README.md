@@ -46,8 +46,7 @@ gulp.task('preflight', function(){
   .pipe(gulp.dest('./'));
 });
 
-```
-#### Options are Edit and Lock, Edit is default
+//Options are Edit and Lock, Edit is default
 ```js
 
 gulp.task('preflight', function(){
@@ -55,6 +54,9 @@ gulp.task('preflight', function(){
   .pipe(gulpTfs({command: 'lock'}))
   .pipe(gulp.dest('./'));
 });
+
+```
+
 
 ## LICENSE
 
