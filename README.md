@@ -38,21 +38,34 @@ $ npm install gulp-tfs --save
 var gulp = require('gulp');
 var gulpTfs = require('gulp-tfs');
 
-// Basic usage:
+// Basic usage using bump for SEMVER bump
 
-gulp.task('preflight', function(){
-  gulp.src('./package.json')
-  .pipe(gulpTfs())
-  .pipe(gulp.dest('./'));
+gulp.task('version', function () {
+
+	var type = patch ? 'patch' : minor ? 'minor' : major ? 'major' : false;
+	if(!type){
+		throw new Error('You must specify a type: \'--patch\' for (0.0.x), \'--minor\' for (0.x.0), or \'--major\' for (x.0.0)');
+	}
+	var bump = require('gulp-bump');
+	var exec = require('child_process').exec;
+	exec('npm view {{project-name}} version', function (err, stdout, stderr) {
+		var version = stdout.replace(/\r?\n|\r/g,'');
+		return gulp.src(['./package.json'])
+			.pipe(gulpTfs())
+			.pipe(bump({ 'type': type, 'version': version }))
+			.pipe(bump({ 'type': type}))
+			.pipe(gulp.dest('./'));
+
+	});
 });
 
 //Options are Edit and Lock, Edit is default
 
-gulp.task('preflight', function(){
-  gulp.src('./package.json')
-  .pipe(gulpTfs({command: 'lock'}))
-  .pipe(gulp.dest('./'));
+gulp.task('lockFile', function () {
+  gulp.src(['./package.json'])
+			.pipe(gulpTfs({ command: 'lock'}))
 });
+
 
 ```
 
