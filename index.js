@@ -29,17 +29,17 @@ var gulpTfs = function (opts) {
 	})
 };
 
-gulpTfs.setDefaultOptions = function (opts) {
+var setDefaultOptions = function (opts) {
 	var validCommands = ['edit', 'lock'];
 	opts = opts || {};
 	opts.command = opts.command || 'edit';
-	if(validCommands.indexOf(opts.command) < 0){
+	if (validCommands.indexOf(opts.command) < 0) {
 		throw new PluginError(PLUGIN_NAME, "The only commands currently implemented are 'edit' and 'lock'");
 	}
 	return opts;
 };
 
-gulpTfs.execCallback = function (err, stdout, stderr) {
+var execCallback = function (err, stdout, stderr) {
 	var returnVal;
 	if (stderr) {
 		returnVal = stderr;
@@ -53,10 +53,10 @@ gulpTfs.execCallback = function (err, stdout, stderr) {
 		returnVal = stdout;
 	}
 	return returnVal;
-}
+};
 
 
-gulpTfs.checkForTFS = function (done) {
+var checkForTFS = function (done) {
 	exec('tf bob', function (err, stdout, stderr) {
 		//not a tf command, but validates that tf throws the right error
 		//this ensures that the tf command is available
@@ -69,4 +69,8 @@ gulpTfs.checkForTFS = function (done) {
 	});
 };
 
-module.exports =gulpTfs;
+module.exports = gulpTfs;
+module.exports.checkForTFS = checkForTFS;
+module.exports.execCallback = execCallback;
+module.exports.setDefaultOptions = setDefaultOptions;
+
