@@ -21,7 +21,7 @@ var gulpTfs = function (opts) {
 					throw new PluginError(PLUGIN_NAME, "This plugin can only be used on a Windows system with Visual Studio installed");
 				}
 
-				var command = 'tf ' + opts.command + " " + file.path;
+				var command = 'tf ' + opts.command + ' "' + file.path + '"';
 				exec(command, function (err, stdout, stderr) {
 					"use strict";
 					processExecResults(err, stdout, stderr);
