@@ -1,6 +1,6 @@
 # gulp-tfs
 
-> Perform edit and lock on files access through gulp
+> Perform edit and lock on files access through gulp. This plugin assumes that you have Visual Studio installed and the path to your Common7/IDE folder in your PATH environment variable.
 
 ## Information
 
